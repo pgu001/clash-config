@@ -1,0 +1,6 @@
+# NAME: rarbg
+payload:
+  - DOMAIN-SUFFIX,rarbg.to
+  - DOMAIN-SUFFIX,torrentapi.org
+  - DOMAIN-KEYWORD,torrentapi.org
+  - DOMAIN-KEYWORD,rarbg
