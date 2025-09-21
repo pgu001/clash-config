@@ -16,10 +16,7 @@ global-client-fingerprint: chrome
 profile:
   store-selected: true
   store-fake-ip: true
-
-hosts:
-  "example.internal.com": "192.168.1.100"
-
+  
 # DNS Settings
 dns:
   enable: true
@@ -295,7 +292,6 @@ rules:
   #- GEOSITE,telegram,Telegram
   #- GEOSITE,bilibili,Bilibili
   #- GEOSITE,bahamut,Bahamut
-  
   
   - RULE-SET,ChinaDomains,Domestic
   - RULE-SET,ChinaIPs,Domestic

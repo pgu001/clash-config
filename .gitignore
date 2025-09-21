@@ -21,3 +21,4 @@ pids
 # Temporary files
 *.tmp
 *.temp
+configs/.DS_Store
