@@ -1,0 +1,359 @@
+# Port and General Settings
+mixed-port: 7890
+allow-lan: true
+ipv6: true
+unified-delay: false
+tcp-concurrent: true
+external-controller: 127.0.0.1:9090
+external-ui: ui
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+
+# System Settings
+find-process-mode: strict
+global-client-fingerprint: chrome
+
+# Profile Settings
+profile:
+  store-selected: true
+  store-fake-ip: true
+  
+hosts:
+  "git.patsnap.com": "192.168.3.93"
+
+# DNS Settings
+dns:
+  enable: true
+  ipv6: true
+  enhanced-mode: fake-ip
+  fake-ip-filter:
+    - "*"
+    - "+.lan"
+    - "+.local"
+    - "+.market.xiaomi.com"
+  default-nameserver:
+    - tls://223.5.5.5
+    - tls://223.6.6.6
+  nameserver:
+    - 218.4.4.4
+    - 218.2.2.2
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+
+# TUN Settings
+tun:
+  enable: true
+  stack: mixed
+  dns-hijack:
+    - "any:53"
+    - "tcp://any:53"
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+
+# Sniffer Settings
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "Mijia Cloud"
+    - "+.push.apple.com"
+
+# GeoData Settings
+geodata-mode: true
+geox-url:
+  geoip: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip-lite.dat"
+  geosite: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country-lite.mmdb"
+  asn: "https://cdn.jsdelivr.net/gh/xishang0128/geoip@release/GeoLite2-ASN.mmdb"
+
+# Keywords Definitions
+Keywords:
+  HongKong: &HongKongKeywords "香港|HK|hongkong|hong kong"
+  Taiwan: &TaiwanKeywords "台湾|TW|taiwan"
+  Japan: &JapanKeywords "日本|JP|japan"
+  UnitedStates: &UnitedStatesKeywords "美国|US|unitedstates|united states"
+  Singapore: &SingaporeKeywords "新加坡|SG|singapore"
+  Exclude: &ExcludeKeywords "Internal|Game"
+  IPLC: &IPLCKeywords "IPLC"
+  Game: &GameKeywords "game|Game|游戏"
+  Internal: &InternalKeywords "internal|Internal|内网"
+
+# Base Configurations
+BaseConfigs:
+  ProxyGroup: &ProxyGroupBase
+    type: select
+    interval: 60
+    lazy: true
+    include-all: true
+    exclude-type: direct
+    exclude-filter: *ExcludeKeywords
+    hidden: true
+    tolerance: 20
+    disable-udp: false
+    timeout: 200
+
+  # 全局策略锚点定义
+  FallbackGroup: &FallbackGroupBase
+    <<: *ProxyGroupBase
+    type: fallback
+    fallback-filter:
+      retry: 3
+      timeout: 200
+      health-check:
+        enable: true
+        interval: 30
+        unhealthy_threshold: 3
+        healthy_threshold: 1
+        dns:
+          - "https://1.1.1.1/dns-query"
+          - "https://dns.hkix.net/dns-query"
+        http:
+          - url: "https://www.gstatic.com/generate_204"
+            method: GET
+            response-status: 204
+
+  UrlTestGroup: &UrlTestGroupBase
+    <<: *ProxyGroupBase
+    type: url-test
+    url: "https://www.gstatic.com/generate_204"
+    interval: 120           # 测速间隔（比 fallback 稍长）
+    tolerance: 15%          # 允许的延迟波动范围
+    timeout: 200             # 单次测速超时
+    
+  ProxyProvider: &ProxyProviderBase
+    type: http
+    interval: 600
+    proxy: DIRECT
+    health-check:
+      enable: true
+      url: 'https://www.gstatic.com/generate_204'
+      interval: 300
+    filter: '^(?!.*(群|活动|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|USE|USED|TOTAL|EXPIRE|EMAIL|Panel|Channel|Author))'
+
+  # Base for Application Group
+  ApplicationPolicy: &ApplicationPolicyBase
+    type: select  
+    hidden: true
+    proxies:
+      - Auto
+      - Hong Kong
+      - Taiwan
+      - Japan 
+      - United States
+      - Singapore
+      - IPLC
+      - Game
+      - Select
+      - Domestic
+      - Suzhou Office
+      - DIRECT
+
+# Proxy Providers
+proxy-providers:
+  ENET:
+    <<: *ProxyProviderBase
+    url: "https://106.75.141.41/api/v1/client/subscribe?token=3669b147df3c45c8126d24778a1a520f"
+    path: ./proxy-providers/ENET.yaml
+    override:
+      additional-prefix: "[ENET] "
+
+  JMS:
+    <<: *ProxyProviderBase
+    url: "https://jjsubmarines.com/members/getsub.php?service=400878&id=b4d3be5d-b4e2-4daf-8878-6ba9889b1461"
+    path: ./proxy-providers/JMS.yaml
+    override:
+      additional-prefix: "[JMS] "
+  
+  JMS**:
+    <<: *ProxyProviderBase
+    url: "http://192.168.0.10:3001/2cXaAxRGfddmGz2yx1wA/download/Sub%2002"
+    path: ./proxy-providers/JMS**.yaml
+    override:
+      additional-prefix: "[JMS**] "
+
+  LingChe:
+    <<: *ProxyProviderBase
+    url: "https://subb.lingche.icu/api/v1/client/subscribe?token=324c2d6a9d69f1be3d0b9cae13abd4d1"
+    path: ./proxy-providers/LingChe.yaml
+    override:
+      additional-prefix: "[LingChe] "
+
+# Static Proxies
+proxies: 
+  - { name: 'Suzhou Office - Internal - 01', type: ss, server: 172.16.100.133, port: 8388, cipher: aes-256-gcm, password: webos20090606, udp: true }
+  - { name: 'Suzhou Office - Internal - 02', type: ss, server: 172.16.100.100, port: 8388, cipher: aes-256-gcm, password: webos20090606, udp: true }
+
+# Proxy Groups
+proxy-groups:
+  # Default proxy group
+  - { name: PROXY, <<: *ApplicationPolicyBase, type: select, hidden: false}
+  
+  # Auto fallback group & Smart group
+  - { name: Auto, <<: *FallbackGroupBase}
+  - { name: Smart, type: smart, proxies: [Hong Kong, Japan, United States], policy-priority: "Hong Kong:10" }
+
+  # Final Group
+  - { name: Final, <<: *ApplicationPolicyBase, type: select, hidden: false}
+
+  # Application Groups
+  - { name: Google, <<: *ApplicationPolicyBase}
+  - { name: Telegram, <<: *ApplicationPolicyBase}
+  - { name: Twitter, <<: *ApplicationPolicyBase}
+  - { name: Docker, <<: *ApplicationPolicyBase }
+  - { name: YouTube, <<: *ApplicationPolicyBase}
+  - { name: Netflix, <<: *ApplicationPolicyBase}
+  - { name: Spotify, <<: *ApplicationPolicyBase}
+  - { name: Github, <<: *ApplicationPolicyBase}
+  - { name: Plex, <<: *ApplicationPolicyBase}
+  - { name: MetaTube, <<: *ApplicationPolicyBase}
+  - { name: AI Services, <<: *ApplicationPolicyBase}
+  - { name: Apple, <<: *ApplicationPolicyBase}
+  - { name: iCloud, <<: *ApplicationPolicyBase}
+  - { name: AppStore, <<: *ApplicationPolicyBase}
+  - { name: Access-via-LAN, <<: *ApplicationPolicyBase}
+
+  # Region Groups
+  - { name: Hong Kong, <<: *UrlTestGroupBase, filter: *HongKongKeywords }
+  - { name: Taiwan, <<: *UrlTestGroupBase, filter: *TaiwanKeywords }
+  - { name: Japan, <<: *UrlTestGroupBase, filter: *JapanKeywords }
+  - { name: United States, <<: *UrlTestGroupBase, filter: *UnitedStatesKeywords }
+  - { name: Singapore, <<: *UrlTestGroupBase, filter: *SingaporeKeywords }
+
+  # IPLC nodes Group
+  - { name: IPLC, <<: *FallbackGroupBase, filter:  *IPLCKeywords, exclude-filter: "" }
+
+  # Internal nodes Group
+  - { name: Suzhou Office, <<: *FallbackGroupBase, filter: *InternalKeywords, exclude-filter: "" }
+
+  # Special Groups
+  - { name: Game, <<: *ProxyGroupBase, filter: *GameKeywords, exclude-filter: "" }
+  - { name: Select, <<: *ProxyGroupBase, hidden: false }
+  - { name: Domestic, proxies: [DIRECT, Suzhou Office], type: select}
+
+# Rule Providers Base
+RuleProviderBase: &RuleProviderBase
+  behavior: "classical"
+  type: http
+  interval: 86400
+
+# Rule Providers
+rule-providers:
+  Docker: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Docker/Docker.yaml", path: ./rule-providers/Docker.yaml }
+  OpenAI: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.yaml", path: ./rule-providers/OpenAI.yaml }
+  BardAI: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/BardAI/BardAI.yaml", path: ./rule-providers/BardAI.yaml }
+  Claude: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Claude/Claude.yaml", path: ./rule-providers/Claude.yaml }
+  Gemini: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Gemini/Gemini.yaml", path: ./rule-providers/Gemini.yaml }
+  Telegram: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Telegram/Telegram.yaml", path: ./rule-providers/Telegram.yaml }
+  ChinaIPs: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ChinaIPs/ChinaIPs_IP.yaml", path: ./rule-providers/ChinaIPs.yaml }
+  TMDB: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Tmdb/Tmdb.yaml", path: ./rule-providers/TMDB.yaml }
+  IMDB: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/IMDB/IMDB.yaml", path: ./rule-providers/IMDB.yaml }
+  MetaTube: { <<: *RuleProviderBase, url: "https://cdn.jsdelivr.net/gh/pakjoeng/clash-rules@main/clash-rule-metatube.yaml", path: ./rule-providers/Metatube.yaml }
+  AppStore: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/AppStore/AppStore.yaml", path: ./rule-providers/AppStore.yaml }
+  Apple: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Apple/Apple.yaml", path: ./rule-providers/Apple.yaml }
+  iCloud: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/iCloud/iCloud.yaml", path: ./rule-providers/iCloud.yaml }
+  ChinaDomains: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/China/China_Domain.yaml", path: ./rule-providers/ChinaDomains.yaml }
+
+# Rules
+rules:
+  # Direct Rules
+  - GEOIP,lan,DIRECT,no-resolve   
+  - GEOIP,private,DIRECT,no-resolve
+  
+  - GEOSITE,microsoft@cn,Domestic
+  - GEOSITE,apple-cn,Domestic
+  - GEOSITE,steam@cn,Domestic
+  - GEOSITE,category-games@cn,Domestic
+
+  # Select Rules
+  - SRC-IP-CIDR,172.16.100.100/32,Access-via-LAN
+
+  # Proxy Rules for AdGuard DNS
+  - DOMAIN-SUFFIX,adguard-dns.com,PROXY
+  
+  # Plex Rules
+  - DOMAIN,v4.plex.tv,DIRECT
+  - DOMAIN,clients.plex.tv,DIRECT
+  - DOMAIN-KEYWORD,direct,DIRECT
+  - DOMAIN,metadata.provider.plex.tv,Plex
+  - DOMAIN,metadata-static.plex.tv,Plex
+  - DOMAIN,analytics.plex.tv,Plex
+  - DOMAIN,meta.plex.tv,Plex
+  - DOMAIN-SUFFIX,plex.tv,Plex
+
+  # Media Scraper Rules
+  - DOMAIN-SUFFIX,thetvdb.com,Plex
+  - RULE-SET,TMDB,Plex
+  - RULE-SET,IMDB,Plex
+
+  # Custom Rules - Proxy
+  - DOMAIN-SUFFIX,mycomic.com,PROXY
+  - DOMAIN-SUFFIX,biccam.com,PROXY
+  - DOMAIN-SUFFIX,brew.sh,PROXY
+  - DOMAIN-SUFFIX,yunpan1.xyz,PROXY
+  - DOMAIN-SUFFIX,lingche.icu,PROXY
+  - DOMAIN-SUFFIX,321012.xyz,PROXY
+  - DOMAIN-SUFFIX,jjsubmarines.com,PROXY
+  - DOMAIN-SUFFIX,clouddrive2.com,PROXY
+  - DOMAIN-KEYWORD,hdhive,PROXY
+  - DOMAIN-SUFFIX,dmm.co.jp,PROXY
+  
+  # Custom Rules - DIRECT
+  - DOMAIN-KEYWORD,checkip,DIRECT
+
+  # Patsnap Rules
+  - IP-CIDR,192.168.3.0/24,Suzhou Office
+  - DOMAIN-SUFFIX,patsnap.info,Suzhou Office
+  - DOMAIN-SUFFIX,git.patsnap.com,Suzhou Office
+  - DOMAIN-KEYWORD,backoffice,Suzhou Office
+  - DOMAIN-SUFFIX,patsnap.io,Suzhou Office
+  - DOMAIN-KEYWORD,synapse-strapi,Suzhou Office
+  - DOMAIN,confluence.zhihuiya.com,Suzhou Office
+  - DOMAIN-SUFFIX,zhihuiya.com,Domestic
+  - DOMAIN-SUFFIX,patsnap.com,PROXY
+
+  # AI Service Rules
+  - RULE-SET,OpenAI,AI Services
+  - RULE-SET,BardAI,AI Services
+  - RULE-SET,Gemini,AI Services
+  - RULE-SET,Claude,AI Services
+  - RULE-SET,Docker,Docker
+  - RULE-SET,MetaTube,MetaTube
+  - RULE-SET,Telegram,Telegram
+  - RULE-SET,AppStore,AppStore
+  - RULE-SET,iCloud,iCloud
+  - RULE-SET,Apple,Apple
+
+  # GeoSite Rules
+  - GEOSITE,github,Github
+  - GEOSITE,twitter,Twitter
+  - GEOSITE,youtube,YouTube
+  - GEOSITE,google,Google
+  - GEOSITE,netflix,Netflix
+  - GEOSITE,spotify,Spotify
+  
+  #- GEOSITE,telegram,Telegram
+  #- GEOSITE,bilibili,Bilibili
+  #- GEOSITE,bahamut,Bahamut
+  
+  
+  - RULE-SET,ChinaDomains,Domestic
+  - RULE-SET,ChinaIPs,Domestic
+  - GEOSITE,CN,Domestic
+  - GEOSITE,geolocation-!cn,Smart
+
+  # GeoIP Rules
+  - GEOIP,google,Google
+  - GEOIP,netflix,Netflix
+  - GEOIP,telegram,Telegram
+  - GEOIP,twitter,Twitter
+  - GEOIP,CN,Domestic
+
+  # Final Rule
+  - MATCH,Final
