@@ -16,9 +16,9 @@ global-client-fingerprint: chrome
 profile:
   store-selected: true
   store-fake-ip: true
-  
+
 hosts:
-  "git.patsnap.com": "192.168.3.93"
+  "example.internal.com": "192.168.1.100"
 
 # DNS Settings
 dns:
@@ -159,36 +159,36 @@ BaseConfigs:
 proxy-providers:
   ENET:
     <<: *ProxyProviderBase
-    url: "https://106.75.141.41/api/v1/client/subscribe?token=3669b147df3c45c8126d24778a1a520f"
+    url: "https://your-provider.com/api/v1/client/subscribe?token=YOUR_TOKEN_HERE"
     path: ./proxy-providers/ENET.yaml
     override:
       additional-prefix: "[ENET] "
 
   JMS:
     <<: *ProxyProviderBase
-    url: "https://jjsubmarines.com/members/getsub.php?service=400878&id=b4d3be5d-b4e2-4daf-8878-6ba9889b1461"
+    url: "https://your-provider.com/api/subscribe?service=XXXXX&id=YOUR_ID_HERE"
     path: ./proxy-providers/JMS.yaml
     override:
       additional-prefix: "[JMS] "
   
   JMS**:
     <<: *ProxyProviderBase
-    url: "http://192.168.0.10:3001/2cXaAxRGfddmGz2yx1wA/download/Sub%2002"
+    url: "http://your-local-server:3001/YOUR_PATH/download/subscription"
     path: ./proxy-providers/JMS**.yaml
     override:
       additional-prefix: "[JMS**] "
 
   LingChe:
     <<: *ProxyProviderBase
-    url: "https://subb.lingche.icu/api/v1/client/subscribe?token=324c2d6a9d69f1be3d0b9cae13abd4d1"
+    url: "https://your-provider.com/api/v1/client/subscribe?token=YOUR_TOKEN_HERE"
     path: ./proxy-providers/LingChe.yaml
     override:
       additional-prefix: "[LingChe] "
 
 # Static Proxies
 proxies: 
-  - { name: 'Suzhou Office - Internal - 01', type: ss, server: 172.16.100.133, port: 8388, cipher: aes-256-gcm, password: webos20090606, udp: true }
-  - { name: 'Suzhou Office - Internal - 02', type: ss, server: 172.16.100.100, port: 8388, cipher: aes-256-gcm, password: webos20090606, udp: true }
+  - { name: 'Office - Internal - 01', type: ss, server: 10.0.0.10, port: 8388, cipher: aes-256-gcm, password: YOUR_PASSWORD_HERE, udp: true }
+  - { name: 'Office - Internal - 02', type: ss, server: 10.0.0.20, port: 8388, cipher: aes-256-gcm, password: YOUR_PASSWORD_HERE, udp: true }
 
 # Proxy Groups
 proxy-groups:
@@ -271,52 +271,6 @@ rules:
   - GEOSITE,steam@cn,Domestic
   - GEOSITE,category-games@cn,Domestic
 
-  # Select Rules
-  - SRC-IP-CIDR,172.16.100.100/32,Access-via-LAN
-
-  # Proxy Rules for AdGuard DNS
-  - DOMAIN-SUFFIX,adguard-dns.com,PROXY
-  
-  # Plex Rules
-  - DOMAIN,v4.plex.tv,DIRECT
-  - DOMAIN,clients.plex.tv,DIRECT
-  - DOMAIN-KEYWORD,direct,DIRECT
-  - DOMAIN,metadata.provider.plex.tv,Plex
-  - DOMAIN,metadata-static.plex.tv,Plex
-  - DOMAIN,analytics.plex.tv,Plex
-  - DOMAIN,meta.plex.tv,Plex
-  - DOMAIN-SUFFIX,plex.tv,Plex
-
-  # Media Scraper Rules
-  - DOMAIN-SUFFIX,thetvdb.com,Plex
-  - RULE-SET,TMDB,Plex
-  - RULE-SET,IMDB,Plex
-
-  # Custom Rules - Proxy
-  - DOMAIN-SUFFIX,mycomic.com,PROXY
-  - DOMAIN-SUFFIX,biccam.com,PROXY
-  - DOMAIN-SUFFIX,brew.sh,PROXY
-  - DOMAIN-SUFFIX,yunpan1.xyz,PROXY
-  - DOMAIN-SUFFIX,lingche.icu,PROXY
-  - DOMAIN-SUFFIX,321012.xyz,PROXY
-  - DOMAIN-SUFFIX,jjsubmarines.com,PROXY
-  - DOMAIN-SUFFIX,clouddrive2.com,PROXY
-  - DOMAIN-KEYWORD,hdhive,PROXY
-  - DOMAIN-SUFFIX,dmm.co.jp,PROXY
-  
-  # Custom Rules - DIRECT
-  - DOMAIN-KEYWORD,checkip,DIRECT
-
-  # Patsnap Rules
-  - IP-CIDR,192.168.3.0/24,Suzhou Office
-  - DOMAIN-SUFFIX,patsnap.info,Suzhou Office
-  - DOMAIN-SUFFIX,git.patsnap.com,Suzhou Office
-  - DOMAIN-KEYWORD,backoffice,Suzhou Office
-  - DOMAIN-SUFFIX,patsnap.io,Suzhou Office
-  - DOMAIN-KEYWORD,synapse-strapi,Suzhou Office
-  - DOMAIN,confluence.zhihuiya.com,Suzhou Office
-  - DOMAIN-SUFFIX,zhihuiya.com,Domestic
-  - DOMAIN-SUFFIX,patsnap.com,PROXY
 
   # AI Service Rules
   - RULE-SET,OpenAI,AI Services
