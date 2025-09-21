@@ -154,33 +154,12 @@ BaseConfigs:
 
 # Proxy Providers
 proxy-providers:
-  ENET:
+  Sub-01:
     <<: *ProxyProviderBase
     url: "https://your-provider.com/api/v1/client/subscribe?token=YOUR_TOKEN_HERE"
-    path: ./proxy-providers/ENET.yaml
+    path: ./proxy-providers/sub-01.yaml
     override:
-      additional-prefix: "[ENET] "
-
-  JMS:
-    <<: *ProxyProviderBase
-    url: "https://your-provider.com/api/subscribe?service=XXXXX&id=YOUR_ID_HERE"
-    path: ./proxy-providers/JMS.yaml
-    override:
-      additional-prefix: "[JMS] "
-  
-  JMS**:
-    <<: *ProxyProviderBase
-    url: "http://your-local-server:3001/YOUR_PATH/download/subscription"
-    path: ./proxy-providers/JMS**.yaml
-    override:
-      additional-prefix: "[JMS**] "
-
-  LingChe:
-    <<: *ProxyProviderBase
-    url: "https://your-provider.com/api/v1/client/subscribe?token=YOUR_TOKEN_HERE"
-    path: ./proxy-providers/LingChe.yaml
-    override:
-      additional-prefix: "[LingChe] "
+      additional-prefix: "[Sub-01] "
 
 # Static Proxies
 proxies: 
@@ -242,20 +221,20 @@ RuleProviderBase: &RuleProviderBase
 
 # Rule Providers
 rule-providers:
-  Docker: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Docker/Docker.yaml", path: ./rule-providers/Docker.yaml }
-  OpenAI: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.yaml", path: ./rule-providers/OpenAI.yaml }
-  BardAI: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/BardAI/BardAI.yaml", path: ./rule-providers/BardAI.yaml }
-  Claude: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Claude/Claude.yaml", path: ./rule-providers/Claude.yaml }
-  Gemini: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Gemini/Gemini.yaml", path: ./rule-providers/Gemini.yaml }
-  Telegram: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Telegram/Telegram.yaml", path: ./rule-providers/Telegram.yaml }
-  ChinaIPs: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ChinaIPs/ChinaIPs_IP.yaml", path: ./rule-providers/ChinaIPs.yaml }
-  TMDB: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Tmdb/Tmdb.yaml", path: ./rule-providers/TMDB.yaml }
-  IMDB: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/IMDB/IMDB.yaml", path: ./rule-providers/IMDB.yaml }
-  MetaTube: { <<: *RuleProviderBase, url: "https://cdn.jsdelivr.net/gh/pakjoeng/clash-rules@main/clash-rule-metatube.yaml", path: ./rule-providers/Metatube.yaml }
-  AppStore: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/AppStore/AppStore.yaml", path: ./rule-providers/AppStore.yaml }
-  Apple: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Apple/Apple.yaml", path: ./rule-providers/Apple.yaml }
-  iCloud: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/iCloud/iCloud.yaml", path: ./rule-providers/iCloud.yaml }
-  ChinaDomains: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/China/China_Domain.yaml", path: ./rule-providers/ChinaDomains.yaml }
+  Docker: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Docker/Docker.yaml", path: ./rule-providers/docker.yaml }
+  OpenAI: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.yaml", path: ./rule-providers/open-ai.yaml }
+  BardAI: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/BardAI/BardAI.yaml", path: ./rule-providers/bard-ai.yaml }
+  Claude: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Claude/Claude.yaml", path: ./rule-providers/claude.yaml }
+  Gemini: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Gemini/Gemini.yaml", path: ./rule-providers/gemini.yaml }
+  Telegram: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Telegram/Telegram.yaml", path: ./rule-providers/telegram.yaml }
+  ChinaIPs: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ChinaIPs/ChinaIPs_IP.yaml", path: ./rule-providers/china-ips.yaml }
+  TMDB: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Tmdb/Tmdb.yaml", path: ./rule-providers/tmdb.yaml }
+  IMDB: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/IMDB/IMDB.yaml", path: ./rule-providers/imdb.yaml }
+  MetaTube: { <<: *RuleProviderBase, url: "https://cdn.jsdelivr.net/gh/pakjoeng/clash-rules@main/clash-rule-metatube.yaml", path: ./rule-providers/metatube.yaml }
+  AppStore: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/AppStore/AppStore.yaml", path: ./rule-providers/app-store.yaml }
+  Apple: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Apple/Apple.yaml", path: ./rule-providers/apple.yaml }
+  iCloud: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/iCloud/iCloud.yaml", path: ./rule-providers/icloud.yaml }
+  ChinaDomains: { <<: *RuleProviderBase, url: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/China/China_Domain.yaml", path: ./rule-providers/china-domains.yaml }
 
 # Rules
 rules:
